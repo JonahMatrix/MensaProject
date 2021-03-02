@@ -2,7 +2,7 @@
 #include "time.h"
 
 const char* ssid       = "Nett";
-const char* password   = "T5Multivan";
+const char* password   = "*********";
 
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;
