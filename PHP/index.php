@@ -20,8 +20,8 @@
 	   echo "Verbindung hergestellt!       ";
 	    
 	    /*
-		$sql = "INSERT INTO rfidtags (Name, Klasse, VALIDFROM, VALIDUNTIL, Days) 
-		VALUES ('Jakob Allgayer', 'Q11', '2021-02-26', '2021-03-26', '4,5,6' )";
+		$sql = "INSERT INTO rfidtags (Name, VALIDFROM, VALIDUNTIL, Days, Klasse) 
+		VALUES ('Linus Steiner', '2021-02-26', '2021-03-26', '4,5,6', 'Q11')";
 		
 		if($link->query($sql) === TRUE) {
 		   echo "Du bist registriert!";
