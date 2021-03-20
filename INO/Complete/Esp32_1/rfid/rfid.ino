@@ -5,14 +5,14 @@
 #include <ArduinoJson.h>
 
 
-const char* ssid = "myWlanSSID";
-const char* password = "changeme";
+const char* ssid = "Nett";
+const char* password = "T5Multivan";
 StaticJsonDocument<200> doc;
 //Your Domain name with URL path or IP address with path
-String serverName = "http://192.168.178.36/db.php";
+String serverName = "https://gymhogautest.000webhostapp.com/DatenbankTest.php";   //old name http://192.168.178.36/db.php
 
-#define SS_PIN    21
-#define RST_PIN   22
+#define SS_PIN    5
+#define RST_PIN   15
 #define SIZE_BUFFER     18
 #define MAX_SIZE_BLOCK  16
 #define greenPin     12
@@ -37,11 +37,11 @@ const int   daylightOffset_sec = 3600;
 ///////////////////////////////////////////
 
 /////////////////LED_STRIP////////////////
-#include <Adafruit_NeoPixel.h>
+/*#include <Adafruit_NeoPixel.h>
 #define PIN 13
 #define NUM_LEDS 85
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
-
+*/
 
 //////////////////////////////////////////
 
@@ -63,19 +63,19 @@ void setup()
 
 
     SPI.begin(); // Init SPI bus
-    pinMode(greenPin, OUTPUT);
-    pinMode(redPin, OUTPUT);
+    //pinMode(greenPin, OUTPUT);
+    //pinMode(redPin, OUTPUT);
 
     configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-  printLocalTime();
+  //printLocalTime();
 
     // Init MFRC522
     mfrc522.PCD_Init();
     Serial.println("Approach your reader card...");
     Serial.println();
 
-    strip.begin();
-    strip.show(); // Initialize all pixels to 'off'
+    //strip.begin();
+    //strip.show(); // Initialize all pixels to 'off'
     
 }
 
@@ -131,15 +131,15 @@ void loop()
             if (uu == 1) {
                 //Serial.println("OK!!! ");
                 Serial.print("User: "); Serial.print(Username); Serial.print(" wurder erkannt. Eintritt erlaubt. Zeit: "); printLocalTime();
-                setAll(0,255,0);
-                delay(2000);
-                setAll(0,0,0);
+                //setAll(0,255,0);
+                //delay(2000);
+                //setAll(0,0,0);
                 
             } else if (uu==0){
                 Serial.print("User: "); Serial.print(Username); Serial.print(" wurder erkannt. Eintritt NICHT erlaubt. Zeit: "); printLocalTime();
-                setAll(255,0,0);
-                delay(2000);
-                setAll(0,0,0);
+                //setAll(255,0,0);
+                //delay(2000);
+                //setAll(0,0,0);
               }
             // Serial.println(payload);
             
@@ -162,4 +162,15 @@ void loop()
     }
 
 
+
+}
+
+void printLocalTime()
+{
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
 }
