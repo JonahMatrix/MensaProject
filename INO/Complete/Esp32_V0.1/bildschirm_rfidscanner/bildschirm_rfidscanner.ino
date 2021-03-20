@@ -7,7 +7,7 @@
 
 
 const char* ssid = "Nett";
-const char* password = "T5Multivan";
+const char* password = "********";
 StaticJsonDocument<200> doc;
 //Your Domain name with URL path or IP address with path
 String serverName = "https://gymhogautest.000webhostapp.com/DatenbankTest.php";   //old name http://192.168.178.36/db.php
