@@ -2,7 +2,7 @@
 //print_r($_SERVER);
 //exit;
 
-$aResult=array("name"=>'',"valid"=>'0');
+$aResult=array("name"=>'',"valid"=>'0',"klasse"=>'');
 if ((@$_REQUEST["RF"]!="")){
 	  $RFID =	trim($_REQUEST["RF"]);
 	  $host_name = 'LOCALHOST';
