@@ -6,8 +6,8 @@
 #include <ArduinoJson.h>
 
 
-const char* ssid = "Nett";
-const char* password = "********";
+const char* ssid = "WLAN-AP";
+const char* password = "86937ZBMAL";
 StaticJsonDocument<200> doc;
 //Your Domain name with URL path or IP address with path
 String serverName = "https://gymhogautest.000webhostapp.com/DatenbankTest.php";   //old name http://192.168.178.36/db.php
@@ -77,8 +77,9 @@ void setup()
     Serial.println("");
     Serial.print("Connected to WiFi network with IP Address: ");
     Serial.println(WiFi.localIP());
-    delay(1000);
     wifiMeldungNextion2();
+    delay(1000);
+    
 
 
     SPI.begin(); // Init SPI bus
@@ -99,7 +100,7 @@ void setup()
     //init and get the time
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   printLocalTime();
- resetNextionText();
+  resetNextionText();
     
 }
 
@@ -322,6 +323,8 @@ void resetNextionText(){
   cmd += "\"";
   Serial.print("meet.pco=0000");
   endNextionCommand();
+  Serial.print("instructions.pco=0000");
+  endNextionCommand();
   Serial.print("meet.txt=" + cmd + "Willkommen" + cmd);
   endNextionCommand();
   Serial.print("instructions.txt=" + cmd + "Bitte halten Sie ihre RFID Karte an den Scanner" + cmd);
@@ -331,11 +334,13 @@ void resetNextionText(){
 
 void wifiMeldungNextion1(){
   String cmd;
-  cmd += "\"";
-  Serial.print("instructions.pco=0000");
+  cmd += "\"";  
+  Serial.print("instructions.pco=64512");
   endNextionCommand();  
+  delay(100);
   Serial.print("instructions.txt=" + cmd + "connecting to Wifi..." + cmd);
   endNextionCommand();
+  
   
 }
 
@@ -345,6 +350,7 @@ void wifiMeldungNextion2(){
   cmd += "\"";
   Serial.print("instructions.pco=9985");
   endNextionCommand();  
+  delay(100);
   Serial.print("instructions.txt=" + cmd + String(x + WiFi.localIP()) + cmd);
   endNextionCommand();
   
