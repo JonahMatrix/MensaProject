@@ -239,12 +239,15 @@ void rfid(){
         cardWasRead = false;
     }
 }
+
+
 void verzoegerung(int x){
  int setmillis;
   setmillis = millis();
   while(millis() - setmillis<x){
      checkRfid(); 
   }
+
     
 }
 
