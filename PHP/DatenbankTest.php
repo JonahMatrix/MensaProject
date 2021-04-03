@@ -2,9 +2,9 @@
 //print_r($_SERVER);
 //exit;
 
-$aResult=array("name"=>'',"valid"=>'0',"klasse"=>'');
+$aResult=array("name"=>'',"valid"=>'0',"klasse"=>'',"reason"=>'0');
 if ((@$_REQUEST["RF"]!="")){
-	  $RFID =	trim($_REQUEST["RF"]);
+	  $RFID = trim($_REQUEST["RF"]);
 	  $host_name = 'LOCALHOST';
 	  $database = 'id16262414_hogau';
 	  $user_name = 'id16262414_admin1';
@@ -15,7 +15,7 @@ if ((@$_REQUEST["RF"]!="")){
 	  if ($link->connect_error) {
 		die('<p>Verbindung zum MySQL Server fehlgeschlagen: '. $link->connect_error .'</p>');
 	  } else {
-			$sql = "SELECT `DAYS`, `NAME`,`Klasse`,
+			$sql = "SELECT `DAYS`, `NAME`,`Klasse`,`lastUse`,
 			CASE 
 				  WHEN  sysdate() between  `VALIDFROM` and  `VALIDUNTIL` THEN 1
 				  ELSE 0 
@@ -26,20 +26,50 @@ if ((@$_REQUEST["RF"]!="")){
 			
 			if ($result->num_rows > 0) {
 			  while($row = $result->fetch_assoc()) {
+				  
+				//Variable in der gespeichert wird Warum man nicht essen darf  
+				$reason = 0;  
+				//Test ob Validfrom and Validuntil wahr ist -> reason = 1
+				if($row["intervall"] == 0){
+				$reason = 1;
+				}
+				
 				$valid=$row["intervall"];
 				$weekdays = explode(',', $row["DAYS"]);
 				
 				if (!in_array(date("N"),$weekdays)&& $valid==1){
 					$valid=0;
+				//Nicht für den jeweiligen Wochentag zugelassen	
+					$reason=2;
 				}
-				$aResult=array("name"=>$row["NAME"],"valid"=>$valid,"klasse"=>$row["Klasse"]);
+				
+				//Sperre das die Karte nicht doppelt verwendet werden kann mit z.B. 3h Puffer
+				$lastUse3h = strtotime($row["lastUse"]) + (3 * 60 * 60);
+				if($lastUse3h > time() && $valid == 1 ){
+				    $valid=0;
+					$reason=3;					
+				}
+				
+				//Falls nicht der richtige Wochentag soll ausgegeben werden wann er essen darf
+				if($reason !== 2){	
+				  $aResult=array("name"=>$row["NAME"],"valid"=>$valid,"klasse"=>$row["Klasse"],"reason"=>$reason);
+				}else{
+				  $aResult=array("name"=>$row["NAME"],"valid"=>$valid,"klasse"=>$row["Klasse"],"reason"=>$reason,"weekdaysValid"=>$row["DAYS"]);
+				}
+				
+				//lastUse wird geupdatet nach einer neuen gültigen Benutzung
+				if($valid == 1){
+				$sql="UPDATE `rfidtags` SET `lastUse` = sysdate() WHERE `rfidtags`.`ID` ='".$RFID."'";
+				mysqli_query($link, $sql);
+				}
+				
 				$sql="insert into  `log` (`id`,`CLIENT`,`ANSWER`, `DATE`)values( '".$RFID."','".@$_SERVER['REMOTE_ADDR']."','".$valid."',sysdate())";
 				//echo $sql;
 				mysqli_query($link, $sql);
 				break;
 			 }
 			} else {
-				$sql="insert into  rfidtags (ID)values( '".$RFID."')";
+				//$sql="insert into  rfidtags (ID)values( '".$RFID."')";
 				//echo $sql;
 				mysqli_query($link, $sql);
 				$sql="insert into  `log` (`id`,`CLIENT`,`ANSWER`, `DATE`)values( '".$RFID."','".@$_SERVER['REMOTE_ADDR']."','0',sysdate())";
