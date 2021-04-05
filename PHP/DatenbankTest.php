@@ -24,11 +24,12 @@ if ((@$_REQUEST["RF"]!="")){
 				//echo $sql;	
 			$result = $link->query($sql);
 			
+			//Variable in der gespeichert wird Warum man nicht essen darf  
+			$reason = 0;
+			
 			if ($result->num_rows > 0) {
 			  while($row = $result->fetch_assoc()) {
-				  
-				//Variable in der gespeichert wird Warum man nicht essen darf  
-				$reason = 0;  
+				   
 				//Test ob Validfrom and Validuntil wahr ist -> reason = 1
 				if($row["intervall"] == 0){
 				$reason = 1;
@@ -69,9 +70,13 @@ if ((@$_REQUEST["RF"]!="")){
 				break;
 			 }
 			} else {
+				//Wenn es diese ID nicht gibt > Rückmeldung
+				$reason=4;
+				$aResult=array("name"=>null,"valid"=>0,"klasse"=>null,"reason"=>$reason);
+				
 				//$sql="insert into  rfidtags (ID)values( '".$RFID."')";
 				//echo $sql;
-				mysqli_query($link, $sql);
+				//mysqli_query($link, $sql);
 				$sql="insert into  `log` (`id`,`CLIENT`,`ANSWER`, `DATE`)values( '".$RFID."','".@$_SERVER['REMOTE_ADDR']."','0',sysdate())";
 		  	    //echo $sql;
 				mysqli_query($link, $sql);
