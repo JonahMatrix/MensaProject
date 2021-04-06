@@ -17,7 +17,7 @@
 	die('<p>Verbindung zum MySQL Server fehlgeschlagen: '. $link->connect_error .'</p>');
 	}else{
 	    
-	   echo "Verbindung hergestellt!       ";
+	   echo "Verbindung hergestellt!<br>";
 	    
 	    /*
 		$sql = "INSERT INTO rfidtags (Name, VALIDFROM, VALIDUNTIL, Days, Klasse) 
@@ -38,13 +38,14 @@
 	
 	    if($res->num_rows > 0) {
 	    while($i = $res->fetch_assoc()){
-	       echo "ID: " . $i["ID"]." Name: ".$i["Name"]."  /  ";
+	       echo "ID: " . $i["ID"]." Name: ".$i["Name"]." WeekdaysValid: ".$i["Days"]."<br>";
 	    }
       	}else{ 
 		
 	    echo "Fehler bei der Datenausgabe!". $link->error;
       	}
       	*/
+      	
 	}
 	
  
