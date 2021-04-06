@@ -4,7 +4,10 @@
 
 $aResult=array("name"=>'',"valid"=>'0',"klasse"=>'',"reason"=>'0');
 if ((@$_REQUEST["RF"]!="")){
-	  $RFID = trim($_REQUEST["RF"]);
+	
+	  $RFID1 = trim($_REQUEST["RF"]);
+	  $RFID = preg_replace( '/[^\pL\d\s]+/u', '' , $RFID1);
+	  
 	  $host_name = 'LOCALHOST';
 	  $database = 'id16262414_hogau';
 	  $user_name = 'id16262414_admin1';
@@ -28,7 +31,7 @@ if ((@$_REQUEST["RF"]!="")){
 			$reason = 0;
 			
 			if ($result->num_rows > 0) {
-			  while($row = $result->fetch_assoc()) {
+			    while($row = $result->fetch_assoc()) {
 				   
 				//Test ob Validfrom and Validuntil wahr ist -> reason = 1
 				if($row["intervall"] == 0){
@@ -68,7 +71,7 @@ if ((@$_REQUEST["RF"]!="")){
 				//echo $sql;
 				mysqli_query($link, $sql);
 				break;
-			 }
+			    }
 			} else {
 				//Wenn es diese ID nicht gibt > Rückmeldung
 				$reason=4;
@@ -77,6 +80,7 @@ if ((@$_REQUEST["RF"]!="")){
 				//$sql="insert into  rfidtags (ID)values( '".$RFID."')";
 				//echo $sql;
 				//mysqli_query($link, $sql);
+				
 				$sql="insert into  `log` (`id`,`CLIENT`,`ANSWER`, `DATE`)values( '".$RFID."','".@$_SERVER['REMOTE_ADDR']."','0',sysdate())";
 		  	    //echo $sql;
 				mysqli_query($link, $sql);
