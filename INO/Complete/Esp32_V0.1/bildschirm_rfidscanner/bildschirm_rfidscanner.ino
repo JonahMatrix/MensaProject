@@ -6,8 +6,8 @@
 #include <ArduinoJson.h>
 
 
-const char* ssid = "WLAN-AP";
-const char* password = "86937ZBMAL";
+const char* ssid = "CableLeachim";
+const char* password = "79242307572504763516";
 StaticJsonDocument<200> doc;
 //Your Domain name with URL path or IP address with path
 String serverName = "https://gymhogautest.000webhostapp.com/DatenbankTest.php";   //old name http://192.168.178.36/db.php
@@ -60,6 +60,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800)
 */
 
 //////////////////////////////////////////
+String build= "Version 0.2";
 void setup()
 {
     Serial.begin(9600);
@@ -253,9 +254,11 @@ void verzoegerung(int x){
 }
 
 void sendNextionDateCommand() {
+  String cmd;
+  cmd += "\"";
   //String command = "time.txt=\""+String(final_time_string+":"+final_time_string2)+"\""; 
-  String command = "date.txt=\""+String(final_date_string+"."+final_date_string2+"."+final_date_string3)+"\""; 
-  Serial.print(command);
+  //String command = "date.txt=\""+String(final_date_string+"."+final_date_string2+"."+final_date_string3)+"\""; 
+  Serial.print("date.txt=" + cmd + final_date_string + final_date_string2 + final_date_string3 + cmd);
   endNextionCommand();
 
 }
@@ -329,7 +332,12 @@ void resetNextionText(){
   endNextionCommand();
   Serial.print("instructions.txt=" + cmd + "Bitte halten Sie ihre RFID Karte an den Scanner" + cmd);
   endNextionCommand();
-  
+  Serial.print("error.pco=0000");
+  endNextionCommand();
+  Serial.print("error.txt=" + cmd + " "+ cmd);
+  endNextionCommand();
+  Serial.print("version.txt=" + cmd + build + cmd);
+  endNextionCommand();
 }
 
 void wifiMeldungNextion1(){
@@ -353,6 +361,8 @@ void wifiMeldungNextion2(){
   delay(100);
   Serial.print("instructions.txt=" + cmd + String(x + WiFi.localIP()) + cmd);
   endNextionCommand();
+  Serial.print("wifi.txt=" +cmd + "connected to wifi" + cmd );
+  endNextionCommand();  
   
 }
 
