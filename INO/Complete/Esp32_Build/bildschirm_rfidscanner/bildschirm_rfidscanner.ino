@@ -7,7 +7,7 @@
 
 
 const char* ssid = "CableLeachim";
-const char* password = "**************";
+const char* password = "*************";
 StaticJsonDocument<200> doc;
 //Your Domain name with URL path or IP address with path
 String serverName = "https://gymhogautest.000webhostapp.com/DatenbankTest.php";   //old name http://192.168.178.36/db.php
@@ -34,7 +34,7 @@ bool cardWasRead;
 //////// Time /////////////////////////////
 #include "time.h"
 const char* ntpServer = "pool.ntp.org";
-const long  gmtOffset_sec = 0;
+const long  gmtOffset_sec = 3600;
 const int   daylightOffset_sec = 3600;
 
 ///////////////////////////////////////////
@@ -50,10 +50,13 @@ String x;
 char last_letter;
 char last_letter2;
 float Ltime = 55;
+
+#define TXD2 17
+#define RXD2 16
 /////////////////////////////////////////////////
 
 /////////////////LED_STRIP////////////////
-/*#include <Adafruit_NeoPixel.h>
+/*include <Adafruit_NeoPixel.h>
 #define PIN 13
 #define NUM_LEDS 85
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
@@ -63,6 +66,8 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800)
 String build= "Version 0.2";
 void setup()
 {
+    Serial2.begin(9600, SERIAL_8N1, RXD2, TXD2);
+  
     Serial.begin(9600);
     
     
@@ -161,9 +166,11 @@ void printLocalTime(){
 void sendNextionTimeCommand() {
   String command = "time.txt=\""+String(final_time_string+":"+final_time_string2)+"\""; 
   //String command = "time.txt=\""+&timeinfo, "%A, %B %d %Y %H:%M:%S"+"\""; 
-  Serial.print(command);
+  Serial2.print(command);
+  Serial.println(command);
+
   endNextionCommand();
-  Serial.println();
+  //Serial.println();
 
 }
 void rfid(){
@@ -203,7 +210,7 @@ void rfid(){
             
             if (uu == 1) {
                 //Serial.println("OK!!! ");
-                ///Serial.print("User: "); Serial.print(Username); Serial.print(" wurder erkannt. Eintritt erlaubt. Zeit: "); printLocalTime();
+                //Serial.print("User: "); Serial.print(Username); Serial.print(" wurder erkannt. Eintritt erlaubt. Zeit: "); printLocalTime();
                 //setAll(0,255,0);
                 //delay(2000);
                 //setAll(0,0,0);
@@ -257,8 +264,11 @@ void sendNextionDateCommand() {
   String cmd;
   cmd += "\"";
   //String command = "time.txt=\""+String(final_time_string+":"+final_time_string2)+"\""; 
-  //String command = "date.txt=\""+String(final_date_string+"."+final_date_string2+"."+final_date_string3)+"\""; 
-  Serial.print("date.txt=" + cmd + final_date_string + final_date_string2 + final_date_string3 + cmd);
+  String command = "date.txt=\""+String(final_date_string+"."+final_date_string2+"."+final_date_string3)+"\""; 
+  //Serial.print("date.txt=" + cmd + final_date_string + final_date_string2 + final_date_string3 + cmd);
+  Serial.println(command);
+  Serial2.print(command);
+  //Serial.print("date.txt=" + cmd + "01.05.2021" + cmd);
   endNextionCommand();
 
 }
@@ -267,15 +277,18 @@ void sendNextionValue1Command(String nameY) {
   String cmd;
   String x = "Guten Appetit";
   cmd += "\"";
-  Serial.print("meet.txt=" + cmd + String(x) + cmd);
+  Serial.println("meet.txt=" + cmd + String(x) + cmd);
+  Serial2.print("meet.txt=" + cmd + String(x) + cmd);
   //String command = "time.txt=\""+String(final_time_string+":"+final_time_string2)+"\""; 
   //String command = "meet.txt=\""+String(value1)+"\""; 
   //Serial.print(command);
   endNextionCommand();
-  Serial.print("meet.pco=9985");
+  Serial.println("meet.pco=9985");
+  Serial2.print("meet.pco=9985");
   endNextionCommand();
   delay(1000);
-  Serial.print("meet.txt=" + cmd + String(nameY) + cmd);
+  Serial.println("meet.txt=" + cmd + String(nameY) + cmd);
+  Serial2.print("meet.txt=" + cmd + String(nameY) + cmd);
   endNextionCommand();
   
 
@@ -285,20 +298,23 @@ void sendNextionValue0Command() {
   //String command = "time.txt=\""+String(final_time_string+":"+final_time_string2)+"\""; 
   String cmd;
   cmd += "\"";
-  Serial.print("meet.txt=" + cmd + "Kein Zutritt" + cmd);
+  Serial.println("meet.txt=" + cmd + "Kein Zutritt" + cmd);
+  Serial2.print("meet.txt=" + cmd + "Kein Zutritt" + cmd);
   //String value0 = "NICHT";
   
   //Serial.print(command);
   endNextionCommand();
-  Serial.print("meet.pco=63488");
+  Serial.println("meet.pco=63488");
+  Serial2.print("meet.pco=63488");
   endNextionCommand();
 
 }
 
 void endNextionCommand(){
-  Serial.write(0xff);
-  Serial.write(0xff);
-  Serial.write(0xff);
+  
+  Serial2.write(0xff);
+  Serial2.write(0xff);
+  Serial2.write(0xff);
 
   
 }
@@ -324,29 +340,32 @@ void checkRfid(){
 void resetNextionText(){
   String cmd;
   cmd += "\"";
-  Serial.print("meet.pco=0000");
+  Serial2.print("meet.pco=0000");
   endNextionCommand();
-  Serial.print("instructions.pco=0000");
+  Serial2.print("instructions.pco=0000");
   endNextionCommand();
-  Serial.print("meet.txt=" + cmd + "Willkommen" + cmd);
+  Serial2.print("meet.txt=" + cmd + "Willkommen" + cmd);
   endNextionCommand();
-  Serial.print("instructions.txt=" + cmd + "Bitte halten Sie ihre RFID Karte an den Scanner" + cmd);
+  Serial2.print("instructions.txt=" + cmd + "Bitte halten Sie ihre RFID Karte an den Scanner" + cmd);
   endNextionCommand();
-  Serial.print("error.pco=0000");
+  Serial2.print("error.pco=0000");
   endNextionCommand();
-  Serial.print("error.txt=" + cmd + " "+ cmd);
+  Serial2.print("error.txt=" + cmd + " "+ cmd);
   endNextionCommand();
-  Serial.print("version.txt=" + cmd + build + cmd);
+  Serial2.print("version.txt=" + cmd + build + cmd);
   endNextionCommand();
+  Serial.println("bildschirm reset");
 }
 
 void wifiMeldungNextion1(){
   String cmd;
   cmd += "\"";  
-  Serial.print("instructions.pco=64512");
+  Serial.println("instructions.pco=64512");
+  Serial2.print("instructions.pco=64512");
   endNextionCommand();  
   delay(100);
-  Serial.print("instructions.txt=" + cmd + "connecting to Wifi..." + cmd);
+  Serial.println("instructions.txt=" + cmd + "connecting to Wifi..." + cmd);
+  Serial2.print("instructions.txt=" + cmd + "connecting to Wifi..." + cmd);
   endNextionCommand();
   
   
@@ -356,12 +375,15 @@ void wifiMeldungNextion2(){
   String cmd;
   String x = "Connected to WiFi network with IP Address:";
   cmd += "\"";
-  Serial.print("instructions.pco=9985");
+  Serial.println("instructions.pco=9985");
+  Serial2.print("instructions.pco=9985");
   endNextionCommand();  
   delay(100);
-  Serial.print("instructions.txt=" + cmd + String(x + WiFi.localIP()) + cmd);
+  Serial.println("instructions.txt=" + cmd + String(x + WiFi.localIP()) + cmd);
+  Serial2.print("instructions.txt=" + cmd + String(x + WiFi.localIP()) + cmd);
   endNextionCommand();
-  Serial.print("wifi.txt=" +cmd + "connected to wifi" + cmd );
+  Serial.println("wifi.txt=" +cmd + "connected to wifi" + cmd );
+  Serial2.print("wifi.txt=" +cmd + "connected to wifi" + cmd );
   endNextionCommand();  
   
 }
@@ -369,12 +391,16 @@ void wifiMeldungNextion2(){
 void sendReadText(){
   String cmd;
   cmd += "\"";
-  Serial.print("instructions.pco=0000");
+  Serial.println("instructions.pco=0000");
+  Serial2.print("instructions.pco=0000");
   endNextionCommand();  
-  Serial.print("meet.pco=0000");
+  Serial.println("meet.pco=0000");
+  Serial2.print("meet.pco=0000");
   endNextionCommand();  
-  Serial.print("instructions.txt=" + cmd + "Karte erfolgreich gelesen!" + cmd);
+  Serial.println("instructions.txt=" + cmd + "Karte erfolgreich gelesen!" + cmd);
+  Serial2.print("instructions.txt=" + cmd + "Karte erfolgreich gelesen!" + cmd);
   endNextionCommand();
-  Serial.print("meet.txt=" + cmd + "Loading..." + cmd);
+  Serial.println("meet.txt=" + cmd + "Loading..." + cmd);
+  Serial2.print("meet.txt=" + cmd + "Loading..." + cmd);
   endNextionCommand();
 }
