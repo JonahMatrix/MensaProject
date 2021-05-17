@@ -6,8 +6,8 @@
 #include <ArduinoJson.h>
 
 
-const char* ssid = "CableLeachim";
-const char* password = "*************";
+const char* ssid = "WLAN-AP";
+const char* password = "86937ZBMAL";
 StaticJsonDocument<200> doc;
 //Your Domain name with URL path or IP address with path
 String serverName = "https://gymhogautest.000webhostapp.com/DatenbankTest.php";   //old name http://192.168.178.36/db.php
