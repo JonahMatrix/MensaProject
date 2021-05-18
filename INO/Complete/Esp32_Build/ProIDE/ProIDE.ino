@@ -211,8 +211,8 @@ void rfid(){
         int httpResponseCode = http.GET();
 
         if (httpResponseCode > 0) {
-            //Serial.print("HTTP Response code: ");
-            //Serial.println(httpResponseCode);
+            /*Serial.print("HTTP Response code: ");
+            Serial.println(http.getString());*/
             String payload = http.getString();
             DeserializationError error = deserializeJson(doc, payload);
             if (error) {
@@ -222,14 +222,26 @@ void rfid(){
             }
             //Serial.println(String(doc["name"]));
           //  Serial.println(String(doc["valid"]));
-            long uu = doc["valid"];
+            long valid = doc["valid"];
             const char* Username = doc["name"];
             const char* Klasse = doc["klasse"];
             long fehler = doc["reason"];
-            //Serial.println(uu);
-            //Serial.println(Username);
+            const char* validdays = doc["weekdaysValid"];
             
-            if (uu == 1) {
+            Serial.println();
+            Serial.print("User Name: ");
+            Serial.print(Username);
+            Serial.print("; Card Valid: ");
+            Serial.print(valid);
+            Serial.print("; error: ");
+            Serial.print(fehler);
+            Serial.print("; validdays: ");
+            Serial.print(validdays);
+            Serial.print("; Card ID: ");
+            Serial.println(UID);
+            Serial.println();
+            
+            if (valid == 1) {
                 //Serial.println("OK!!! ");
                 //Serial.print("User: "); Serial.print(Username); Serial.print(" wurder erkannt. Eintritt erlaubt. Zeit: "); printLocalTime();
                 //setAll(0,255,0);
@@ -239,7 +251,7 @@ void rfid(){
                 verzoegerung(2000);
                 resetNextionText();
                 
-            } else if (uu==0){
+            } else if (valid==0){
                 ///Serial.print("User: "); Serial.print(Username); Serial.print(" wurder erkannt. Eintritt NICHT erlaubt. Zeit: "); printLocalTime();
                 //setAll(255,0,0);
                 //delay(2000);
@@ -327,7 +339,7 @@ void sendNextionValue0Command(int x) {
   if (x == 1) {
     meldung = "Karte abglaufen";
   } else if (x == 2){
-    meldung = "Karte an diesem Wochentag ungültig";
+    meldung = "Karte an diesem Wochentag nicht berechtigt";
   } else if (x == 3){
     meldung = "Ihre Karten wurde innerhalb 3 Stunden bereits verwendet";
   } else if (x == 4){
