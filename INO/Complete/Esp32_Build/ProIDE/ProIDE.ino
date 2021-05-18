@@ -63,7 +63,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800)
 */
 
 //////////////////////////////////////////
-String build= "Version 0.3";
+String build= "Version 0.4";
 /////////////////////////////////////////
 void setup()
 {
@@ -110,12 +110,14 @@ void setup()
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   printLocalTime();
   resetNextionText();
+
     
 }
 
 void loop()
 {
   ////Bildschirm////////////////////
+  delay(1);
     printLocalTime();
   sendNextionTimeCommand();
   sendNextionDateCommand();
@@ -201,14 +203,16 @@ void rfid(){
     cardWasRead = true;
     if (WiFi.status() == WL_CONNECTED) {
         HTTPClient http;
-        //printLocalTime();
 
 
         // Your Domain name with URL path or IP address with path
         http.begin(serverPath.c_str());
 
+        delay(1);
         // Send HTTP GET request
         int httpResponseCode = http.GET();
+
+        delay(1);
 
         if (httpResponseCode > 0) {
             /*Serial.print("HTTP Response code: ");
