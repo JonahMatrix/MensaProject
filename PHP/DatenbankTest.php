@@ -18,6 +18,19 @@ if ((@$_REQUEST["RF"]!="")){
 	  if ($link->connect_error) {
 		die('<p>Verbindung zum MySQL Server fehlgeschlagen: '. $link->connect_error .'</p>');
 	  } else {
+		     
+			
+		    //Funktion Einer ID die für Testzwecke den lastUse-Wert aller Karten zurücksetzt
+		    if($RFID == "1234"){
+				
+			 $sql3="UPDATE 'rfidtags' SET 'lastUse' = (sysdate()-(4 * 60 * 60)) WHERE 'lastUse' > (sysdate()-(3 * 60 * 60))";
+			 echo $sql3
+			 exit;
+             mysqli_query($link, $sql3);
+			 
+			}
+		    
+			
 			$sql = "SELECT `DAYS`, `NAME`,`Klasse`,`lastUse`,
 			CASE 
 				  WHEN  sysdate() between  `VALIDFROM` and  `VALIDUNTIL` THEN 1
