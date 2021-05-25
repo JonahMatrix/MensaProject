@@ -23,11 +23,11 @@ if ((@$_REQUEST["RF"]!="")){
 		    //Funktion Einer ID die für Testzwecke den lastUse-Wert aller Karten zurücksetzt
 		    if($RFID == "1234"){
 				
-			 $sql3="UPDATE 'rfidtags' SET 'lastUse' = (sysdate()-(4 * 60 * 60)) WHERE 'lastUse' > (sysdate()-(3 * 60 * 60))";
-			 echo $sql3
-			 exit;
-             mysqli_query($link, $sql3);
-			 
+			$sql3="UPDATE `rfidtags` SET `lastUse` = (sysdate()-(4*60*60)) WHERE `lastUse` > (sysdate()-(3*60*60))";
+			echo $sql3;
+            mysqli_query($link, $sql3);
+            echo "LastUse wurde für alle Karten in einen gültigen Bereich geschoben";
+		    exit;
 			}
 		    
 			
