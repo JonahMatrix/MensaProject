@@ -2,6 +2,7 @@
 //print_r($_SERVER);
 //exit;
 
+
 $aResult=array("name"=>'',"valid"=>'0',"klasse"=>'',"reason"=>'0');
 if ((@$_REQUEST["RF"]!="")){
 	
@@ -18,15 +19,22 @@ if ((@$_REQUEST["RF"]!="")){
 	  if ($link->connect_error) {
 		die('<p>Verbindung zum MySQL Server fehlgeschlagen: '. $link->connect_error .'</p>');
 	  } else {
-		     
+		    			
 			
 		    //Funktion Einer ID die für Testzwecke den lastUse-Wert aller Karten zurücksetzt
 		    if($RFID == "1234"){
 				
-			$sql3="UPDATE `rfidtags` SET `lastUse` = (sysdate()-(4*60*60)) WHERE `lastUse` > (sysdate()-(3*60*60))";
+			$date4hts = time()-4*60*60;
+			$date4h = date('Y-m-d h:i:s' , $date4hts);
+			
+			$date3hts = time()-3*60*60;
+			$date3h = date('Y-m-d h:i:s' , $date3hts);
+			
+			$sql3="UPDATE `rfidtags` SET `lastUse` = '$date4h' WHERE `lastUse` >= '$date3h' ";
 			echo $sql3;
-            mysqli_query($link, $sql3);
-            echo "LastUse wurde für alle Karten in einen gültigen Bereich geschoben";
+			
+            //mysqli_query($link, $sql3);
+            //echo "LastUse wurde für alle Karten in einen gültigen Bereich geschoben";
 		    exit;
 			}
 		    
@@ -80,9 +88,20 @@ if ((@$_REQUEST["RF"]!="")){
 				mysqli_query($link, $sql);
 				}
 				
-				$sql="insert into  `log` (`id`,`CLIENT`,`ANSWER`, `DATE`)values( '".$RFID."','".@$_SERVER['REMOTE_ADDR']."','".$valid."',sysdate())";
+				$sql="insert into `log` (`id`,`CLIENT`,`ANSWER`, `DATE`)values( '".$RFID."','".@$_SERVER['REMOTE_ADDR']."','".$valid."',sysdate())";
 				//echo $sql;
 				mysqli_query($link, $sql);
+				
+				
+				//Datensätze die Älter als 60 Tage sind aus log löschen
+				$delete60day = time()-2*30*24*60*60;
+                $datedelete60day = date('Y-m-d h:i:s' , $delete60day);
+				
+                $sql5="DELETE FROM `log` WHERE `DATE` < '$datedelete60day' ";
+                //echo $sql5;
+				mysqli_query($link, $sql5);
+				
+				
 				break;
 			    }
 			} else {
@@ -97,7 +116,16 @@ if ((@$_REQUEST["RF"]!="")){
 				$sql="insert into  `log` (`id`,`CLIENT`,`ANSWER`, `DATE`)values( '".$RFID."','".@$_SERVER['REMOTE_ADDR']."','0',sysdate())";
 		  	    //echo $sql;
 				mysqli_query($link, $sql);
-	
+				
+				//Datensätze die Älter als 60 Tage sind aus log löschen
+				$delete60day = time()-2*30*24*60*60;
+                $datedelete60day = date('Y-m-d h:i:s' , $delete60day);
+				
+                $sql5="DELETE FROM `log` WHERE `DATE` < '$datedelete60day' ";
+                //echo $sql5;
+				mysqli_query($link, $sql5);
+				
+				
 			}
 			mysqli_close($link);
 	    }
