@@ -31,10 +31,10 @@ if ((@$_REQUEST["RF"]!="")){
 			$date3h = date('Y-m-d h:i:s' , $date3hts);
 			
 			$sql3="UPDATE `rfidtags` SET `lastUse` = '$date4h' WHERE `lastUse` >= '$date3h' ";
-			echo $sql3;
+			//echo $sql3;
 			
-            //mysqli_query($link, $sql3);
-            //echo "LastUse wurde für alle Karten in einen gültigen Bereich geschoben";
+            mysqli_query($link, $sql3);
+            echo "LastUse wurde für alle Karten in einen gültigen Bereich geschoben";
 		    exit;
 			}
 		    
