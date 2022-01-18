@@ -1,4 +1,4 @@
-#include <MFRC522.h> //library responsible for communicating with the module RFID-RC522
+ #include <MFRC522.h> //library responsible for communicating with the module RFID-RC522
 #include <SPI.h> //library responsible for communicating of SPI bus
 #include <WiFi.h>
 #include "time.h"
@@ -6,11 +6,11 @@
 #include <ArduinoJson.h>
 
 
-const char* ssid = "WLAN-AP";             //" iPhone Jakob"
-const char* password = "86937ZBMAL";      //"12345678"
+const char* ssid = "MensaGeraetTest";             //" iPhone Jakob"
+const char* password = "JJJL0407";      //"12345678"
 StaticJsonDocument<200> doc;
 //Your Domain name with URL path or IP address with path
-String serverName = "https://gymhogautest.000webhostapp.com/DatenbankTest.php";   //old name http://192.168.178.36/db.php
+String serverName = "http://192.168.200.106/MensaPay/PHPBeta.php";   //old name http://192.168.178.36/db.php
 
 
 
@@ -107,8 +107,8 @@ void setup()
     //strip.show(); // Initialize all pixels to 'off'
 
     //init and get the time
-  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
-  printLocalTime();
+  //configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  //printLocalTime();
   resetNextionText();
 
     
@@ -118,7 +118,7 @@ void loop()
 {
   ////Bildschirm////////////////////
   delay(1);
-    printLocalTime();
+    //printLocalTime();
   sendNextionTimeCommand();
   sendNextionDateCommand();
   //Serial.println();
